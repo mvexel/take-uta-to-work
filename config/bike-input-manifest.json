@@ -1,0 +1,49 @@
+{
+  "retrieved_utc": "2026-10-17T20:12:39.372238+00:00",
+  "inputs": {
+    "data/graph/slc.osm.pbf": {
+      "bytes": 12562686,
+      "sha256": "e7a75d62c1b0eeafa1f11685e8da2a0e1429573191af62bd3b090a84eb949025"
+    },
+    "data/otp-shaded-2.10.0.jar": {
+      "bytes": 191382029,
+      "sha256": "5a5d1efd30b19295418ac49ad048c5f5cac341af63dd41d5e2ae5ad9e7b37885"
+    },
+    "data/bike-graph/slc.dem.tif": {
+      "bytes": 20972457,
+      "sha256": "893d889e1a2b0ecded9090999800182dc64332501b9faa01de2103835af1fb6e"
+    }
+  },
+  "gtfs_source": "https://gtfsfeed.rideuta.com/GTFS.zip",
+  "osm_source": "https://download.geofabrik.de/north-america/us/utah-latest.osm.pbf",
+  "osm_bbox": [
+    -111.99,
+    40.68,
+    -111.8,
+    40.83
+  ],
+  "osm_crop": "osmium extract -s complete_ways",
+  "osm_attribution": "\u00a9 OpenStreetMap contributors, ODbL",
+  "service_dates": [
+    "2026-10-19",
+    "2026-10-22"
+  ],
+  "elevation": {
+    "source": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/13/TIFF/historical/n41w112/USGS_13_n41w112_20260519.tif",
+    "product": "USGS 1/3 Arc Second n41w112 20260519",
+    "license": "Public domain USGS 3DEP",
+    "vertical_units": "metres",
+    "vertical_datum": "NAVD88",
+    "horizontal_crs": "NAD83 EPSG:4269",
+    "resolution": "native 1/3 arcsecond, approximately 8 by 10 metres at SLC",
+    "nodata": -999999,
+    "valid_pixels_percent": 100,
+    "bounds": [
+      -111.995,
+      40.6699074,
+      -111.7899074,
+      40.84
+    ],
+    "source_metadata": "https://data.usgs.gov/datacatalog/data/USGS%3A3a81321b-c153-416f-98b7-cc8e5f0e17c3"
+  }
+}

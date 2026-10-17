@@ -1,0 +1,6 @@
+{
+  "demDefaults": {
+    "elevationUnitMultiplier": 1.0
+  },
+  "distanceBetweenElevationSamples": 10.0
+}

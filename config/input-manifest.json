@@ -1,0 +1,32 @@
+{
+  "retrieved_utc": "2026-10-17T20:12:39.372238+00:00",
+  "inputs": {
+    "data/graph/uta.gtfs.zip": {
+      "bytes": 8760119,
+      "sha256": "99c8f840a80ff1d2d9574fc4a28a7485b3b943fb8030c1340f6b12787fb7677c"
+    },
+    "data/graph/slc.osm.pbf": {
+      "bytes": 12562686,
+      "sha256": "e7a75d62c1b0eeafa1f11685e8da2a0e1429573191af62bd3b090a84eb949025"
+    },
+    "data/otp-shaded-2.10.0.jar": {
+      "bytes": 191382029,
+      "sha256": "5a5d1efd30b19295418ac49ad048c5f5cac341af63dd41d5e2ae5ad9e7b37885"
+    }
+  },
+  "gtfs_source": "https://gtfsfeed.rideuta.com/GTFS.zip",
+  "osm_source": "https://download.geofabrik.de/north-america/us/utah-latest.osm.pbf",
+  "osm_bbox": [
+    -111.99,
+    40.68,
+    -111.8,
+    40.83
+  ],
+  "osm_crop": "osmium extract -s complete_ways",
+  "osm_attribution": "\u00a9 OpenStreetMap contributors, ODbL",
+  "service_dates": [
+    "2026-10-19",
+    "2026-10-22"
+  ],
+  "elevation": "not configured"
+}

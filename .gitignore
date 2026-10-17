@@ -1,0 +1,8 @@
+data/
+results/
+*.jar
+*.pbf
+*.zip
+*.obj
+__pycache__/
+.DS_Store

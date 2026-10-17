@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-17T21:58:09.317663+00:00",
+  "status_sha256": "fd3abbc7c164de7c563cd62b6945c3f7aaad7162c5ff084f412f2d82f05e14a0",
+  "stale_after_hours": 24,
+  "requests": [
+    {
+      "kind": "decision",
+      "ask": "For the first useful product, is the priority discovering neighborhoods or comparing known buildings? Is the morning commute enough, or is the return journey needed too?",
+      "owner": "Martijn",
+      "impact": "These choices refine the completed vision draft and next scope. No implementation is underway; the earlier patch proposal remains deferred.",
+      "recommendation": "Noa recommends a place shortlist supported by a map; a neighborhood-first direction is the alternative. Reply to the questions already presented by dot in Slack.",
+      "evidence": "status",
+      "verified_at": "2026-10-17T21:58:09.317663+00:00"
+    }
+  ],
+  "cards": [
+    {
+      "id": "bike",
+      "state": "done",
+      "title": "Demonstrate bicycle feasibility",
+      "summary": "USGS DEM graph and four directional landmark pairs checked; 50 bike samples returned 11 qualifying and 39 bounded negatives.",
+      "owner": "Routing lead",
+      "done_when": "Documented elevation source, bike/walk-only legs and independent uphill/downhill checks support the bounded experiment.",
+      "next_step": "Keep profile gaps and rider calibration as follow-up work; no full-area or field-validation claim.",
+      "evidence": "bicycle",
+      "verified_at": "2026-10-17T20:25:54+00:00"
+    },
+    {
+      "id": "coverage",
+      "state": "planned",
+      "title": "Strengthen routing evidence",
+      "summary": "Expand representative origins and boundary cases before making coverage claims.",
+      "owner": "Routing lead + independent reviewer",
+      "done_when": "Named and snapped origins, transfer/calendar edge cases, errors and cold timing are documented.",
+      "next_step": "Replace synthetic samples with representative origins and inspect returned legs.",
+      "evidence": "project",
+      "verified_at": "2026-10-17T20:19:43+00:00"
+    },
+    {
+      "id": "map",
+      "state": "done",
+      "title": "Build the usable SLC commute map",
+      "summary": "Local map cycle complete; UT-01 feedback received. Confirmed qualifying TRAX alternative omitted by combined search; alternatives presentation needs clarity.",
+      "owner": "Parent: goal/priorities \u00b7 technical lead: breakdown \u00b7 independent reviewer",
+      "done_when": "A usable local map makes sampling and uncertainty explicit; Martijn can inspect familiar locations and their exact-origin itineraries.",
+      "next_step": "Patch proposal deferred, not awaiting approval. Use UT-01 and routing evidence to inform Noa\u2019s longer-term product vision before implementation.",
+      "evidence": "status",
+      "verified_at": "2026-10-17T21:55:48.623654+00:00"
+    },
+    {
+      "id": "setup",
+      "state": "done",
+      "title": "Local routing foundation",
+      "summary": "Local Git, OTP 2.10.0 and mise Java 25 are working; inputs and outputs stay local.",
+      "owner": "Routing lead",
+      "done_when": "A reproducible local graph build and query harness are documented.",
+      "next_step": "Keep provenance and reproduction steps current.",
+      "evidence": "status",
+      "verified_at": "2026-10-17T20:19:43+00:00"
+    },
+    {
+      "id": "transit",
+      "state": "done",
+      "title": "Run the transit feasibility spike",
+      "summary": "450 queries across nine scenarios; 2,070 timetable comparisons with zero mismatches.",
+      "owner": "Routing lead + independent reviewer",
+      "done_when": "Bus/TRAX/both \u00d7 0/1/2 changes inspected across 50 sampled origins; 13 tests passing.",
+      "next_step": "Broaden validation; these are schedule estimates, not exhaustive reachability.",
+      "evidence": "status",
+      "verified_at": "2026-10-17T20:25:54+00:00"
+    },
+    {
+      "id": "entrance",
+      "state": "done",
+      "title": "Verify the ART approach",
+      "summary": "Official southwest entrance and mapped final walking approach checked.",
+      "owner": "Routing lead + independent reviewer",
+      "done_when": "University entrance evidence and decoded route geometry agree near the ART door.",
+      "next_step": "Retain ordinary-walking limitation; no wheelchair or field-validation claim.",
+      "evidence": "status",
+      "verified_at": "2026-10-17T20:19:43+00:00"
+    },
+    {
+      "id": "reliability",
+      "state": "backlog",
+      "title": "Historical service reliability",
+      "summary": "No collector enabled and no validated reliability values.",
+      "owner": "Future data role \u00b7 not assigned",
+      "done_when": "Historical events, matching feeds, coverage and sample sizes support defensible metrics.",
+      "next_step": "Revisit collection scope and data rights before any implementation.",
+      "evidence": "project",
+      "verified_at": "2026-10-17T20:19:43+00:00"
+    },
+    {
+      "id": "region",
+      "state": "backlog",
+      "title": "Broader geographic coverage",
+      "summary": "The buffered SLC crop is not a full UTA accessibility model.",
+      "owner": "Future routing role \u00b7 not assigned",
+      "done_when": "A separately scoped regional model has validated inputs and measured performance.",
+      "next_step": "Use the initial SLC experiment to size a later expansion.",
+      "evidence": "project",
+      "verified_at": "2026-10-17T20:19:43+00:00"
+    },
+    {
+      "id": "bike-followup",
+      "state": "backlog",
+      "title": "Calibrate bike estimates",
+      "summary": "Library has an 84.53 m missing profile; graph profile failures and upstream aggregate elevation remain unresolved.",
+      "owner": "Routing lead \u00b7 follow-up",
+      "done_when": "Profile gaps are explained or repaired and estimates have independent empirical calibration.",
+      "next_step": "Investigate profile failures; retain unknown classification and omit untrusted aggregate totals.",
+      "evidence": "bicycle",
+      "verified_at": "2026-10-17T20:25:54+00:00"
+    },
+    {
+      "id": "product-vision",
+      "state": "done",
+      "title": "Define product vision and design direction",
+      "summary": "Noa completed docs/product-vision.md: place shortlist supported by a map, with a neighborhood-first alternative. Draft delivered; product choices pending.",
+      "owner": "Noa \u00b7 product/design lead; dot coordinates; Martijn owns product decisions",
+      "done_when": "A coherent product/design direction is documented for Martijn\u2019s review, grounded in UT-01 and explicit technical constraints.",
+      "next_step": "Await Martijn\u2019s answers to the two questions already presented in Slack: neighborhoods vs known buildings; morning-only vs return journey. No implementation underway; patch deferred.",
+      "evidence": "status",
+      "verified_at": "2026-10-17T21:58:09.317663+00:00"
+    }
+  ],
+  "technical_constraints": [
+    {
+      "title": "Bicycle model limits",
+      "detail": "The bounded bike spike is complete. Missing profiles and rider calibration remain team follow-up work, with no user action blocking local development.",
+      "evidence": "bicycle"
+    },
+    {
+      "title": "Publication boundary",
+      "detail": "UTA reuse/redistribution terms remain unresolved. This does not block authorized local work; publication is outside current scope.",
+      "evidence": "status"
+    }
+  ]
+}
