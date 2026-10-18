@@ -6,3 +6,19 @@ results/
 *.obj
 __pycache__/
 .DS_Store
+
+# Local secrets and raw inputs must never enter public commits.
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+secrets*.json
+id_rsa
+id_ed25519
+*.tif
+*.tiff
+*.gtfs
+.rumdl_cache/

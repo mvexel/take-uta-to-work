@@ -13,4 +13,6 @@ python3 scripts/map_server.py
 
 Open http://127.0.0.1:8002. See [map instructions](docs/map.md) to start the two local routing servers, then inspect exact-origin journeys or evaluate sampled locations. The map uses local assets and OSM streets. The older saved-results viewer remains available with `python3 scripts/viewer.py` on port 8000.
 
-Read [development instructions](docs/development.md), [project brief and decisions](docs/project.md), and [status/handoff](docs/status.md) before attempting routing. The transit spike has measured results for nine scenarios; bicycle directional elevation tests also passed for the bounded experiment. See [bike evidence](docs/bicycle.md). See the status document for evidence and limitations. Code is MIT licensed; third-party data has separate terms.
+Read [development instructions](docs/development.md), [product specification and architecture](docs/project.md), and [technical status](docs/status.md) before attempting routing. The transit spike has measured results for nine scenarios; bicycle directional elevation tests also passed for the bounded experiment. See [bike evidence](docs/bicycle.md). See the status document for evidence and limitations. Code is MIT licensed; third-party data has separate terms.
+
+Organization coordination, team charters, participant feedback and internal planning are maintained separately in a private repository. This repository contains code and public technical documentation.

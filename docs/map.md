@@ -4,7 +4,7 @@ Open http://127.0.0.1:8002 . Leaflet 1.9.4 and its license are vendored in web/v
 
 ## Restart
 
-From /Users/mvexel/dev/take-uta-to-work, run each server in its own terminal (skip a command if that port is already serving):
+From the repository root, run each server in its own terminal (skip a command if that port is already serving):
 
 ```sh
 sh scripts/serve.sh
@@ -12,7 +12,7 @@ sh scripts/serve-bike.sh
 python3 scripts/map_server.py
 ```
 
-These use existing local graphs and mise Java. The map server needs Python 3.9+ and no Python packages. Stop with Ctrl-C. All bind to loopback. No Docker host is needed for these Java processes; Martijn uses Colima for Docker. See development.md and bicycle.md for input preparation and graph rebuilding.
+These use existing local graphs and mise Java. The map server needs Python 3.9+ and no Python packages. Stop with Ctrl-C. All bind to loopback. No Docker host is needed for these Java processes; Colima can provide Docker when needed. See development.md and bicycle.md for input preparation and graph rebuilding.
 
 To regenerate the display layer from the local OSM graph input with installed osmium:
 
