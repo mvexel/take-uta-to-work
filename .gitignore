@@ -22,3 +22,8 @@ id_ed25519
 *.tiff
 *.gtfs
 .rumdl_cache/
+
+# Worktree input links and local browser verification output.
+/data
+/output/
+/.playwright-cli/
