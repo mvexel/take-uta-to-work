@@ -525,6 +525,8 @@ function renderPoint(p) {
 (async () => {
   try {
     config = await json("/api/config");
+    $("arrival").min = config.service_bounds.arrival_min;
+    $("arrival").max = config.service_bounds.arrival_max;
     const [w, s, e, n] = config.study_bounds;
     const bounds = [
       [s, w],

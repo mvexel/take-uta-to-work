@@ -7,6 +7,7 @@ import datetime as dt
 import hashlib
 import json
 import math
+import os
 import time
 from dataclasses import asdict, dataclass
 from functools import lru_cache
@@ -18,7 +19,7 @@ from spike import inspect, variables
 
 ROOT = Path(__file__).resolve().parents[1]
 DENVER = ZoneInfo("America/Denver")
-POLICY = "exploration-v1"
+POLICY = "exploration-v2"
 HORIZON_MINUTES = 90
 
 
@@ -49,9 +50,11 @@ class Scenario:
         arrival = dt.datetime.fromisoformat(s.arrival)
         if arrival.tzinfo is not None or arrival.second or arrival.microsecond:
             raise ValueError("Use a local Denver date and time at minute precision")
-        # The actual loaded static feed, not the current date, determines support.
-        if not dt.date(2026, 8, 16) <= arrival.date() <= dt.date(2026, 12, 5):
-            raise ValueError("Loaded timetable supports August 16–December 5, 2026")
+        bounds = service_bounds()
+        if not bounds["arrival_min"] <= s.arrival <= bounds["arrival_max"]:
+            raise ValueError(
+                f"Loaded graph supports arrivals {bounds['arrival_min']} through {bounds['arrival_max']} America/Denver"
+            )
         aware = arrival.replace(tzinfo=DENVER)
         if (
             aware.astimezone(dt.timezone.utc).astimezone(DENVER).replace(tzinfo=None)
@@ -84,6 +87,22 @@ class Scenario:
         ]
 
 
+def service_bounds():
+    # OTP bounds are inclusive service dates, not wall-clock itinerary bounds.
+    config = json.loads((ROOT / "data/graph/build-config.json").read_text())
+    start = dt.date.fromisoformat(config["transitServiceStart"])
+    end = dt.date.fromisoformat(config["transitServiceEnd"])
+    # Reserve the first service day for overnight trips and the search horizon.
+    if start >= end:
+        raise ValueError("Graph needs at least two service dates")
+    return {
+        "service_start": str(start),
+        "service_end": str(end),
+        "arrival_min": f"{start + dt.timedelta(days=1)}T00:00",
+        "arrival_max": f"{end}T23:59",
+    }
+
+
 @lru_cache(maxsize=1)
 def input_identity() -> dict:
     paths = [
@@ -91,6 +110,9 @@ def input_identity() -> dict:
         "config/bike-scenario.json",
         "config/input-manifest.json",
         "config/bike-input-manifest.json",
+        "data/graph/build-config.json",
+        "data/graph/graph.obj",
+        "data/bike-graph/graph.obj",
     ]
     return {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in paths}
 
@@ -181,7 +203,10 @@ def route_point(origin: dict, scenario: Scenario, request=request_plan) -> dict:
         )
         config["arrival_local"] = scenario.arrival
         v = variables(origin, config, mode, scenario.changes)
-        endpoint = f"http://127.0.0.1:{8081 if mode == 'bike' else 8080}/otp/gtfs/v1"
+        endpoint = os.environ.get(
+            "OTP_BIKE_URL" if mode == "bike" else "OTP_TRANSIT_URL",
+            f"http://127.0.0.1:{8081 if mode == 'bike' else 8080}/otp/gtfs/v1",
+        )
         search = {"mode": mode, "complete": False, "errors": []}
         out["searches"].append(search)
         allowed = config["routes"].get(mode, [])

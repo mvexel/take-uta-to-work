@@ -5,14 +5,52 @@ from __future__ import annotations
 import argparse
 import json
 import mimetypes
+import os
+import re
+import time
 import threading
 from dataclasses import asdict, replace
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
-from explore_api import ROOT, Scenario, route_point
+from explore_api import ROOT, Scenario, route_point, service_bounds
 from explore_area import CELL_METRES, STUDY, compute, reclassify
 from map_api import BOUNDS
+
+
+class BusyError(Exception):
+    pass
+
+
+class BoundedServer(ThreadingHTTPServer):
+    # Reject excess connections before creating threads; no unbounded waiters.
+    request_queue_size = 8
+
+    def __init__(self, *args, **kwargs):
+        self.connections = threading.BoundedSemaphore(8)
+        super().__init__(*args, **kwargs)
+
+    def process_request(self, request, address):
+        request.settimeout(10)
+        if not self.connections.acquire(blocking=False):
+            try:
+                request.sendall(
+                    b"HTTP/1.1 503 Service Unavailable\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+                )
+            finally:
+                self.shutdown_request(request)
+            return
+        try:
+            super().process_request(request, address)
+        except Exception:
+            self.connections.release()
+            raise
+
+    def process_request_thread(self, request, address):
+        try:
+            super().process_request_thread(request, address)
+        finally:
+            self.connections.release()
 
 
 class AreaJobs:
@@ -21,10 +59,41 @@ class AreaJobs:
         self.jobs = {}
         self.worker = threading.Semaphore(1)
 
+    def prune_cache(self):
+        directory = ROOT / "results"
+        files = sorted(
+            (
+                p
+                for p in directory.glob("area-*.json")
+                if re.fullmatch(r"area-[0-9a-f]{20}\.json", p.name)
+                and not p.is_symlink()
+                and p.is_file()
+            ),
+            key=lambda p: p.stat().st_mtime,
+            reverse=True,
+        )
+        size = 0
+        for index, path in enumerate(files):
+            size += path.stat().st_size
+            if (
+                index >= 8
+                or size > 64 * 1024 * 1024
+                or time.time() - path.stat().st_mtime > 86400
+            ):
+                path.unlink(missing_ok=True)
+
     def start(self, scenario):
         base = replace(scenario, target=30)
         key = base.identity()
         with self.lock:
+            self.prune_cache()
+            terminal = [
+                k
+                for k, j in self.jobs.items()
+                if j["status"] not in ("queued", "running") and k != key
+            ]
+            for k in terminal[:-1]:
+                self.jobs.pop(k)
             cache = ROOT / "results" / f"area-{key}.json"
             if (
                 key not in self.jobs or self.jobs[key]["cancel"].is_set()
@@ -53,12 +122,12 @@ class AreaJobs:
                 and not old["cancel"].is_set()
             ):
                 return key
-            for job in self.jobs.values():
-                if job["status"] in ("queued", "running"):
-                    job["cancel"].set()
-            # Keep at most two finished grids; failed/cancelled jobs carry no large payload.
-            finished = [k for k, v in self.jobs.items() if v["status"] == "complete"]
-            for k in finished[:-1]:
+            if any(j["status"] in ("queued", "running") for j in self.jobs.values()):
+                raise BusyError(
+                    "An area calculation is active; cancel it and retry after it stops"
+                )
+            # One active worker and at most two retained terminal job records.
+            for k in list(self.jobs)[:-1]:
                 self.jobs.pop(k)
             job = {
                 "status": "queued",
@@ -96,6 +165,7 @@ class AreaJobs:
                         temporary = directory / f"area-{key}.tmp"
                         temporary.write_text(json.dumps(result), encoding="utf-8")
                         temporary.replace(directory / f"area-{key}.json")
+                        self.prune_cache()
             except Exception as exc:
                 # Boundary: worker failures must become a visible failed job, never no-match.
                 with self.lock:
@@ -159,6 +229,7 @@ class Handler(BaseHTTPRequestHandler):
                     "study_bounds": STUDY,
                     "routing_bounds": BOUNDS,
                     "cell_metres": CELL_METRES,
+                    "service_bounds": service_bounds(),
                 }
             )
             return
@@ -214,10 +285,16 @@ class Handler(BaseHTTPRequestHandler):
                 self.json(self.server.jobs.read(key, scenario.target))
                 return
             if self.path == "/api/point":
-                with self.server.point_slots:
+                if not self.server.point_slots.acquire(blocking=False):
+                    raise BusyError("Point calculation slots are busy; retry shortly")
+                try:
                     self.json(route_point(data["origin"], scenario))
+                finally:
+                    self.server.point_slots.release()
                 return
             self.send_error(404)
+        except BusyError as exc:
+            self.json({"error": str(exc)}, 429)
         except (ValueError, KeyError, TypeError) as exc:
             self.json({"error": str(exc)}, 400)
 
@@ -235,7 +312,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=8003)
     args = parser.parse_args()
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    service_bounds()  # Fail closed if graph provenance is unavailable.
+    server = BoundedServer(
+        (os.environ.get("APP_BIND", "127.0.0.1"), args.port), Handler
+    )
     server.jobs = AreaJobs()
     server.point_slots = threading.Semaphore(2)
     print(f"Exploration: http://127.0.0.1:{args.port}", flush=True)

@@ -12,7 +12,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "scripts"))
 from explore_api import Scenario, check, route_point
 from explore_area import classify, grid, reclassify
-from explore_server import AreaJobs
+from explore_server import AreaJobs, BusyError
 from test_map_api import itinerary, plan
 
 
@@ -194,6 +194,10 @@ class AreaTests(unittest.TestCase):
             patch("explore_server.ROOT", pathlib.Path(directory)),
             patch("explore_server.threading.Thread") as thread,
         ):
+            with self.assertRaises(BusyError):
+                jobs.start(s)
+            self.assertFalse(thread.called)
+            jobs.jobs[key]["status"] = "cancelled"
             jobs.start(s)
             self.assertTrue(thread.called)
             self.assertFalse(jobs.jobs[key]["cancel"].is_set())
