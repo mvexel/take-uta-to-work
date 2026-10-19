@@ -16,3 +16,7 @@ Open http://127.0.0.1:8002. See [map instructions](docs/map.md) to start the two
 Read [development instructions](docs/development.md), [product specification and architecture](docs/project.md), and [technical status](docs/status.md) before attempting routing. The transit spike has measured results for nine scenarios; bicycle directional elevation tests also passed for the bounded experiment. See [bike evidence](docs/bicycle.md). See the status document for evidence and limitations. Code is MIT licensed; third-party data has separate terms.
 
 Organization coordination, team charters, participant feedback and internal planning are maintained separately in a private repository. This repository contains code and public technical documentation.
+
+## Parameters-first exploration
+
+The new local exploration slice runs at http://127.0.0.1:8003 with `python3 scripts/explore_server.py`. It provides an approximate target/fringe raster contour and exact point comparisons. See [method, measured limits and development instructions](docs/exploration.md). The original sampled-point prototype remains on port 8002.

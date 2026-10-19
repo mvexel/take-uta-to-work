@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Take UTA to Work · explore a commute</title>
+    <link rel="stylesheet" href="/vendor/leaflet.css" />
+    <link rel="stylesheet" href="/explore.css" />
+    <script defer src="/vendor/leaflet.js"></script>
+    <script defer src="/explore.js"></script>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/">Take UTA<br /><strong>to Work</strong></a>
+      <div>
+        <p class="eyebrow">SALT LAKE CITY · LOCAL STUDY</p>
+        <h1>Start with the commute.</h1>
+        <p>Find places to explore. Check the journey from each one.</p>
+      </div>
+      <span class="study-tag">ART / University of Utah</span>
+    </header>
+    <main>
+      <section class="workspace">
+        <aside>
+          <form id="parameters">
+            <h2>Your commute</h2>
+            <label for="destination">Destination</label
+            ><select id="destination">
+              <option value="art">
+                U of U Art Building · southwest entrance
+              </option>
+            </select>
+            <p class="hint">
+              This first study supports ART. The entrance has steps.
+            </p>
+            <label for="arrival">Arrive by · America/Denver</label
+            ><input
+              id="arrival"
+              type="datetime-local"
+              value="2026-10-20T11:00"
+              min="2026-10-20T00:00"
+              max="2026-10-22T23:59"
+              required
+            />
+            <p class="hint">
+              Arrival can be up to 15 minutes earlier. Static timetable.
+            </p>
+            <label for="mode">Travel by</label
+            ><select id="mode">
+              <option value="both">Bus + TRAX</option>
+              <option value="trax">TRAX only</option>
+              <option value="bus">Bus only</option>
+              <option value="bike">Bike only · experimental</option>
+            </select>
+            <label for="changes">Maximum vehicle changes</label
+            ><select id="changes">
+              <option value="0">0 · direct</option>
+              <option value="1" selected>1 change</option>
+              <option value="2">2 changes</option>
+            </select>
+            <label for="target"
+              >Preferred commute time
+              <output id="target-value">30 min</output></label
+            ><input
+              id="target"
+              type="range"
+              min="10"
+              max="60"
+              step="5"
+              value="30"
+            />
+            <p class="hint" id="fringe-copy">
+              Also explore journeys up to 40 minutes.
+            </p>
+            <button id="apply" type="submit">Explore this commute</button>
+            <p id="form-status" class="hint" role="status">
+              Set your parameters, then explore.
+            </p>
+          </form>
+          <details>
+            <summary>What these estimates include</summary>
+            <p>
+              Walking, waiting, riding and transfers are part of elapsed time.
+              Earliness is separate. TRAX excludes S-Line and FrontRunner. Bus +
+              TRAX checks bus and rail alternatives separately too; it is still
+              a bounded search.
+            </p>
+            <p>
+              Bike uses a maximum flat-ground speed of 4.17 m/s and directional
+              elevation. Missing elevation stays unknown. Times are not
+              rider-calibrated. No reliability or return-trip estimate.
+            </p>
+            <p>
+              The area guide checks five origins per cell, up to 250 m apart.
+              Mixed cells remain unknown. It cannot resolve every barrier or
+              address: select a point to check it. The contour study is smaller
+              than the loaded street extract.
+            </p>
+          </details>
+        </aside>
+        <div class="map-shell">
+          <div class="map-toolbar">
+            <span id="map-instruction"
+              >Choose a commute before selecting points.</span
+            ><button type="button" id="reset" class="quiet">
+              Study extent
+            </button>
+          </div>
+          <div id="map" aria-label="Commute exploration map"></div>
+          <div id="legend" class="legend">
+            <span
+              ><i class="target"></i
+              ><b id="target-label">Target ≤30 min</b></span
+            ><span
+              ><i class="fringe"></i
+              ><b id="fringe-label">Fringe 30–40 min</b></span
+            ><span><i class="unknown"></i>Mixed / unknown</span
+            ><span
+              ><i class="outside"></i>No returned match within fringe*</span
+            >
+          </div>
+          <div class="area-status">
+            <p id="area-status" role="status" aria-live="polite">
+              Area not evaluated. No neighborhood boundaries are assumed.
+            </p>
+            <progress id="area-progress" hidden></progress
+            ><button type="button" id="retry-area" class="quiet" hidden>
+              Retry area calculation
+            </button>
+            <p class="hint">
+              * A completed bounded search, not proof of inaccessibility. Beyond
+              the dashed study outline: no area calculation. Click within the
+              larger street extract for an exact check.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="points-section" aria-labelledby="points-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">YOUR EXPLORATION POINTS</p>
+            <h2 id="points-title">Compare the actual journeys.</h2>
+          </div>
+          <button id="recheck" class="quiet" type="button" disabled>
+            Recheck selected points
+          </button>
+        </div>
+        <p id="points-hint">
+          After applying parameters, select two locations on the map — including
+          places beyond the target.
+        </p>
+        <form id="coordinate-form">
+          <label for="latitude">Or enter coordinates</label
+          ><input
+            id="latitude"
+            type="number"
+            step="any"
+            placeholder="Latitude"
+            aria-label="Latitude"
+            required
+          /><input
+            id="longitude"
+            type="number"
+            step="any"
+            placeholder="Longitude"
+            aria-label="Longitude"
+            required
+          /><button id="add-point" type="submit" disabled>Check point</button>
+        </form>
+        <div id="points" class="points" aria-live="polite"></div>
+      </section>
+    </main>
+    <footer>
+      ©
+      <a href="https://www.openstreetmap.org/copyright"
+        >OpenStreetMap contributors</a
+      >
+      · ODbL · OpenTripPlanner 2.10.0 · Local static schedules · No housing
+      suitability claim
+    </footer>
+  </body>
+</html>

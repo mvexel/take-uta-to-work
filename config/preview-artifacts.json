@@ -1,0 +1,7 @@
+{
+  "data/graph/build-config.json": "1a16f4758477f96396841ef594d02626720ad9eeb7450f824f5a7252301f326a",
+  "data/graph/graph.obj": "d0c17093d7f6b9d2e586a3bf00111c731ba815c6ccc79fbccfb5c043eea92d83",
+  "data/bike-graph/graph.obj": "1ed78b1d474ac5583390fa56c5c7e8a3a54a4da6ac9237d996caa11cd032e7ab",
+  "data/otp-shaded-2.10.0.jar": "5a5d1efd30b19295418ac49ad048c5f5cac341af63dd41d5e2ae5ad9e7b37885",
+  "data/map-streets.geojson": "5b91928f21ef64c0f297c94afa9f37c24f56343fadb22afc9585b0eb18919471"
+}

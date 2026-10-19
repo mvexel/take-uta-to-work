@@ -29,3 +29,7 @@ ART southwest public entrance: 40.7609893415, -111.8451667792. Official universi
 The combined-mode search may prune a qualifying rail alternative before it reaches the application, even when a TRAX-only search returns it. Correct allowlists, available seats in an output limit, and a successful query do not guarantee alternative completeness. No comfort weighting is configured. Any future correction needs a bounded regression test and independent review.
 
 No qualifying returned route is a bounded observation, not proof of unreachable coverage. Incomplete search, missing elevation and transport errors remain separate. No reliability collector runs and no historical reliability values are validated. Planned facilities are not assumed usable.
+
+## Private preview correction under review
+
+The graph-derived arrival range is October 20–22, reserving October 19 for overnight search context. This replaces the incorrect feed-wide date acceptance. See [private preview](private-preview.md) for packaging, limits and outstanding runtime validation. No remote deployment has occurred.

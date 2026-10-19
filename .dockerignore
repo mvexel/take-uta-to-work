@@ -1,0 +1,10 @@
+*
+!scripts/
+!scripts/**
+!config/
+!config/**
+!web/
+!web/**
+!deploy/
+!deploy/Dockerfile
+**/__pycache__
